@@ -3,90 +3,153 @@
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { aboutData } from "@/data/portfolio";
-import { FiUser } from "react-icons/fi";
+import { FiCompass, FiShield, FiCpu, FiBookOpen } from "react-icons/fi";
 
 export default function About() {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 });
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
 
   return (
     <section
       id="about"
       ref={ref}
-      className="relative overflow-hidden px-6 py-24 lg:py-32"
+      aria-labelledby="about-heading"
+      className="relative border-b border-[var(--border-color)] px-6 py-20 lg:py-28"
     >
-      {/* bg decoration */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-indigo-500/5 blur-3xl" />
-      </div>
-
-      <div className="relative mx-auto max-w-6xl">
-        {/* Section heading */}
+      <div className="mx-auto max-w-[1240px]">
+        {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className="mb-16 text-center"
+          transition={{ duration: 0.4 }}
+          className="mb-14 flex flex-col justify-between gap-4 border-b border-[var(--border-color)] pb-6 md:flex-row md:items-end"
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-indigo-200/50 bg-indigo-50/80 px-4 py-1.5 text-sm font-medium text-indigo-700 dark:border-indigo-800/50 dark:bg-indigo-950/50 dark:text-indigo-300">
-            <FiUser className="h-3.5 w-3.5" />
-            About Me
-          </span>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
-            Get to know me
-          </h2>
+          <div>
+            <div className="mb-2 flex items-center gap-2 font-mono text-xs text-[var(--text-muted)]">
+              <span className="text-[var(--text-primary)] font-semibold">02</span>
+              <span>/</span>
+              <span>PERSPECTIVE & BACKGROUND</span>
+            </div>
+            <h2
+              id="about-heading"
+              className="font-display text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl"
+            >
+              Engineering Philosophy & Context
+            </h2>
+          </div>
+          <div className="font-mono text-xs text-[var(--text-muted)]">
+            <span>AFFILIATION: </span>
+            <span className="text-[var(--text-secondary)] font-medium">KHON KAEN UNIVERSITY (KKU)</span>
+          </div>
         </motion.div>
 
-        <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-          {/* Profile image */}
+        {/* 2-Column Editorial Layout */}
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-14">
+          {/* Left Column: Personal Narrative & Typographic Monogram Card (Span 5) */}
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="relative mx-auto w-full max-w-md"
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="lg:col-span-5 flex flex-col space-y-6"
           >
-            <div className="aspect-square overflow-hidden rounded-3xl border border-gray-200/50 bg-gradient-to-br from-indigo-100 via-purple-50 to-indigo-100 shadow-2xl shadow-indigo-500/10 dark:border-gray-800/50 dark:from-indigo-950/50 dark:via-gray-900 dark:to-indigo-950/50">
-              {/* Placeholder avatar graphic */}
-              <div className="flex h-full w-full items-center justify-center">
-                <div className="relative">
-                  <div className="h-40 w-40 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 opacity-20" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <FiUser className="h-20 w-20 text-indigo-500/60 dark:text-indigo-400/60" />
-                  </div>
+            {/* Editorial Typographic Visual Card */}
+            <div className="rounded-lg border border-[var(--border-color)] bg-[var(--bg-surface)] p-6 sm:p-8 shadow-editorial">
+              <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-4 font-mono text-xs text-[var(--text-muted)]">
+                <span>IDENTITY / DEV-ID</span>
+                <span className="text-[var(--accent-fg)] bg-[var(--accent)] px-2 py-0.5 rounded text-[10px] font-bold">
+                  ACTIVE
+                </span>
+              </div>
+
+              {/* Monogram & Title */}
+              <div className="my-8 flex items-center gap-5">
+                <div className="flex h-16 w-16 items-center justify-center rounded border border-[var(--border-color)] bg-[var(--bg-surface-subtle)] font-display text-2xl font-bold text-[var(--text-primary)]">
+                  RT<span className="text-[var(--accent)] font-mono text-sm">_</span>
+                </div>
+                <div>
+                  <h3 className="font-display text-xl font-bold text-[var(--text-primary)]">
+                    Rungthum
+                  </h3>
+                  <p className="font-mono text-xs text-[var(--text-secondary)]">
+                    Software Engineer & Student
+                  </p>
+                  <p className="font-mono text-[11px] text-[var(--text-muted)]">
+                    Khon Kaen, Thailand
+                  </p>
+                </div>
+              </div>
+
+              {/* Academic & Professional Context */}
+              <div className="space-y-3 border-t border-[var(--border-color)] pt-4 text-xs font-mono text-[var(--text-secondary)]">
+                <div className="flex items-center justify-between">
+                  <span className="text-[var(--text-muted)]">Institution:</span>
+                  <span className="text-[var(--text-primary)]">Khon Kaen University</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-[var(--text-muted)]">Core Focus:</span>
+                  <span className="text-[var(--text-primary)]">Web Systems & Architecture</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-[var(--text-muted)]">Availability:</span>
+                  <span className="text-[var(--text-primary)]">Internships & Junior Roles</span>
                 </div>
               </div>
             </div>
-            {/* Decorative floating element */}
-            <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-2xl border border-indigo-200/50 bg-indigo-50/80 backdrop-blur-sm dark:border-indigo-800/50 dark:bg-indigo-950/50" />
-            <div className="absolute -left-4 -top-4 h-16 w-16 rounded-2xl border border-purple-200/50 bg-purple-50/80 backdrop-blur-sm dark:border-purple-800/50 dark:bg-purple-950/50" />
+
+            {/* Technical Interests */}
+            <div className="rounded-lg border border-[var(--border-color)] bg-[var(--bg-surface-subtle)] p-6">
+              <h4 className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] mb-3">
+                Current Technical Focus:
+              </h4>
+              <ul className="space-y-2 text-xs text-[var(--text-secondary)]">
+                {aboutData.interests.map((interest, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <span className="text-[var(--accent)] font-bold">›</span>
+                    <span>{interest}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </motion.div>
 
-          {/* Bio & Stats */}
+          {/* Right Column: Working Principles & Intro (Span 7) */}
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="lg:col-span-7 flex flex-col justify-between space-y-8"
           >
-            <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
-              {aboutData.bio}
-            </p>
+            <div>
+              <p className="text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg">
+                {aboutData.introduction}
+              </p>
+            </div>
 
-            <div className="mt-10 grid grid-cols-3 gap-6">
-              {aboutData.stats.map((stat, i) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={inView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.5, delay: 0.3 + i * 0.1 }}
-                  className="rounded-2xl border border-gray-200/50 bg-white/60 p-4 text-center backdrop-blur-sm transition-colors hover:border-indigo-200 dark:border-gray-800/50 dark:bg-gray-900/60 dark:hover:border-indigo-800"
-                >
-                  <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-400 sm:text-3xl">
-                    {stat.value}
+            {/* Working Principles */}
+            <div className="space-y-6 border-t border-[var(--border-color)] pt-8">
+              <h4 className="font-mono text-xs uppercase tracking-wider text-[var(--text-muted)]">
+                CORE WORKING PRINCIPLES
+              </h4>
+
+              <div className="grid grid-cols-1 gap-6">
+                {aboutData.principles.map((principle, index) => (
+                  <div
+                    key={index}
+                    className="group rounded-md border border-[var(--border-color)] bg-[var(--bg-surface)] p-5 transition-all hover:border-[var(--text-muted)]"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono text-xs font-bold text-[var(--text-muted)]">
+                        0{index + 1}
+                      </span>
+                      <h5 className="font-display text-base font-bold text-[var(--text-primary)]">
+                        {principle.title}
+                      </h5>
+                    </div>
+                    <p className="mt-2 text-xs leading-relaxed text-[var(--text-secondary)]">
+                      {principle.body}
+                    </p>
                   </div>
-                  <div className="mt-1 text-xs font-medium text-gray-500 dark:text-gray-500 sm:text-sm">
-                    {stat.label}
-                  </div>
-                </motion.div>
-              ))}
+                ))}
+              </div>
             </div>
           </motion.div>
         </div>

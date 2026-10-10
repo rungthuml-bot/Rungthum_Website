@@ -6,40 +6,49 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   const scrollTo = (href: string) => {
-    const el = document.querySelector(href);
+    const targetId = href.replace("#", "");
+    const el = document.getElementById(targetId);
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <footer className="border-t border-gray-200/50 bg-white/60 backdrop-blur-sm dark:border-gray-800/50 dark:bg-gray-950/60">
-      <div className="mx-auto max-w-6xl px-6 py-12">
-        <div className="flex flex-col items-center gap-8 md:flex-row md:justify-between">
-          {/* Logo */}
-          <button
-            onClick={() => scrollTo("#hero")}
-            className="text-xl font-bold tracking-tight text-gray-900 dark:text-white"
-          >
-            <span className="text-indigo-500">&lt;</span>
-            {siteConfig.name}
-            <span className="text-indigo-500">/&gt;</span>
-          </button>
+    <footer className="border-t border-[var(--border-color)] bg-[var(--bg-surface-subtle)] px-6 py-12">
+      <div className="mx-auto max-w-[1240px]">
+        <div className="flex flex-col justify-between gap-8 md:flex-row md:items-center">
+          {/* Brand & Identity */}
+          <div className="space-y-1">
+            <button
+              onClick={() => scrollTo("#hero")}
+              className="text-left font-display text-base font-bold tracking-tight text-[var(--text-primary)] hover:text-[var(--text-secondary)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] rounded-sm"
+              aria-label="Back to top"
+            >
+              {siteConfig.name}
+              <span className="text-[var(--accent)] font-mono ml-0.5">.</span>
+            </button>
+            <p className="font-mono text-xs text-[var(--text-muted)]">
+              {siteConfig.role} — Khon Kaen, Thailand
+            </p>
+          </div>
 
-          {/* Nav links */}
-          <ul className="flex flex-wrap items-center justify-center gap-6">
-            {footerLinks.map((link) => (
-              <li key={link.href}>
-                <button
-                  onClick={() => scrollTo(link.href)}
-                  className="text-sm text-gray-600 transition-colors hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400"
-                >
-                  {link.label}
-                </button>
-              </li>
-            ))}
-          </ul>
+          {/* Editorial Nav links */}
+          <nav aria-label="Footer navigation">
+            <ul className="flex flex-wrap items-center gap-6">
+              {footerLinks.map((link) => (
+                <li key={link.href}>
+                  <button
+                    onClick={() => scrollTo(link.href)}
+                    className="font-mono text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)] rounded-sm"
+                  >
+                    <span className="text-[var(--text-muted)] mr-1">{link.number}</span>
+                    {link.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-          {/* Social icons */}
-          <div className="flex gap-3">
+          {/* Social links */}
+          <div className="flex items-center gap-4">
             {socialLinks.map((social) => {
               const Icon = social.icon;
               return (
@@ -49,7 +58,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.label}
-                  className="flex h-10 w-10 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-500 dark:hover:bg-gray-800 dark:hover:text-indigo-400"
+                  className="rounded p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)]"
                 >
                   <Icon className="h-4 w-4" />
                 </a>
@@ -58,25 +67,15 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="my-8 h-px bg-gray-200/50 dark:bg-gray-800/50" />
-
-        {/* Copyright */}
-        <p className="text-center text-sm text-gray-500 dark:text-gray-500">
-          © {currentYear} {siteConfig.name}. All rights reserved. Built with{" "}
-          <span className="font-medium text-gray-700 dark:text-gray-400">
-            Next.js
-          </span>
-          ,{" "}
-          <span className="font-medium text-gray-700 dark:text-gray-400">
-            Tailwind CSS
-          </span>{" "}
-          &{" "}
-          <span className="font-medium text-gray-700 dark:text-gray-400">
-            Framer Motion
-          </span>
-          .
-        </p>
+        {/* Divider & Colophon */}
+        <div className="mt-8 pt-8 border-t border-[var(--border-color)] flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px] text-[var(--text-muted)]">
+          <p>
+            © {currentYear} {siteConfig.name}. Designed with Modern Editorial rigor.
+          </p>
+          <p>
+            Next.js 14 • React 18 • TypeScript • Tailwind CSS
+          </p>
+        </div>
       </div>
     </footer>
   );

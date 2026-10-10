@@ -9,42 +9,44 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-ibm-thai)', 'var(--font-manrope)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-manrope)', 'var(--font-ibm-thai)', 'sans-serif'],
+        mono: ['var(--font-ibm-mono)', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
       colors: {
-        indigo: {
-          50: '#eef2ff',
-          100: '#e0e7ff',
-          200: '#c7d2fe',
-          300: '#a5b4fc',
-          400: '#818cf8',
-          500: '#6366f1',
-          600: '#4f46e5',
-          700: '#4338ca',
-          800: '#3730a3',
-          900: '#312e81',
-          950: '#1e1b4b',
+        bg: {
+          DEFAULT: 'var(--bg-primary)',
+          primary: 'var(--bg-primary)',
+          surface: 'var(--bg-surface)',
+          subtle: 'var(--bg-surface-subtle)',
+        },
+        editorial: {
+          primary: 'var(--text-primary)',
+          secondary: 'var(--text-secondary)',
+          muted: 'var(--text-muted)',
+          border: 'var(--border-color)',
+          'border-subtle': 'var(--border-subtle)',
+        },
+        accent: {
+          DEFAULT: 'var(--accent)',
+          fg: 'var(--accent-fg)',
+          subtle: 'var(--accent-subtle)',
         },
       },
-      animation: {
-        'fade-in': 'fadeIn 0.5s ease-in-out',
-        'slide-up': 'slideUp 0.6s ease-out',
-        'float': 'float 6s ease-in-out infinite',
-        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      maxWidth: {
+        content: '1240px',
       },
-      keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
-        slideUp: {
-          '0%': { opacity: '0', transform: 'translateY(30px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-20px)' },
-        },
+      borderRadius: {
+        xs: '2px',
+        sm: '4px',
+        DEFAULT: '6px',
+        md: '8px',
+        lg: '10px',
+        xl: '12px',
+      },
+      boxShadow: {
+        editorial: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+        'editorial-hover': '0 4px 12px 0 rgba(0, 0, 0, 0.08)',
       },
     },
   },

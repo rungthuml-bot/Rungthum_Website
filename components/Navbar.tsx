@@ -10,21 +10,21 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("#hero");
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
-  /* ── scroll shadow ── */
+  /* ── scroll detection ── */
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 24);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  /* ── intersection observer for active section ── */
+  /* ── active section observer ── */
   useEffect(() => {
-    const ids = navLinks.map((l) => l.href.replace("#", ""));
+    const sectionIds = ["hero", ...navLinks.map((l) => l.href.replace("#", ""))];
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -33,10 +33,10 @@ export default function Navbar() {
           }
         });
       },
-      { rootMargin: "-40% 0px -55% 0px" }
+      { rootMargin: "-30% 0px -60% 0px" }
     );
 
-    ids.forEach((id) => {
+    sectionIds.forEach((id) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
@@ -44,125 +44,169 @@ export default function Navbar() {
     return () => observer.disconnect();
   }, []);
 
-  const handleNav = useCallback(
-    (href: string) => {
-      setMobileOpen(false);
-      const el = document.querySelector(href);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth" });
-      }
-    },
-    []
-  );
+  const handleNav = useCallback((href: string) => {
+    setMobileOpen(false);
+    const targetId = href.replace("#", "");
+    const el = document.getElementById(targetId);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
 
-  const toggleTheme = () =>
+  const toggleTheme = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
+  };
 
   return (
-    <motion.header
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ type: "spring", stiffness: 100, damping: 20 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
         scrolled
-          ? "bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl shadow-lg shadow-black/[0.03] dark:shadow-black/[0.2]"
-          : "bg-transparent"
+          ? "border-b border-[var(--border-color)] bg-[var(--bg-primary)]/92 backdrop-blur-md py-3.5 shadow-[0_1px_0_0_rgba(0,0,0,0.03)]"
+          : "border-b border-transparent bg-transparent py-5"
       }`}
     >
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        {/* Logo */}
+      <div className="mx-auto flex max-w-[1240px] items-center justify-between px-6 lg:px-10">
+        {/* Editorial Logo / Identity */}
         <button
           onClick={() => handleNav("#hero")}
-          className="text-xl font-bold tracking-tight text-gray-900 dark:text-white"
+          className="group flex items-center gap-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] rounded-sm"
+          aria-label={`${siteConfig.name} - Return to top`}
         >
-          <span className="text-indigo-500">&lt;</span>
-          {siteConfig.name}
-          <span className="text-indigo-500">/&gt;</span>
+          <div className="flex flex-col">
+            <span className="font-display text-base font-bold tracking-tight text-[var(--text-primary)] transition-colors group-hover:text-[var(--text-secondary)]">
+              {siteConfig.name}
+              <span className="text-[var(--accent)] font-mono ml-0.5">.</span>
+            </span>
+            <span className="font-mono text-[11px] tracking-wider uppercase text-[var(--text-muted)]">
+              SWE / ARCHITECTURE
+            </span>
+          </div>
         </button>
 
-        {/* Desktop Links */}
-        <ul className="hidden items-center gap-1 md:flex">
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <button
-                onClick={() => handleNav(link.href)}
-                className={`relative rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                  activeSection === link.href
-                    ? "text-indigo-600 dark:text-indigo-400"
-                    : "text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-                }`}
-              >
-                {link.label}
-                {activeSection === link.href && (
-                  <motion.span
-                    layoutId="nav-underline"
-                    className="absolute inset-x-1 -bottom-px h-0.5 rounded-full bg-indigo-500"
-                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                  />
-                )}
-              </button>
-            </li>
-          ))}
-        </ul>
+        {/* Desktop Editorial Navigation */}
+        <nav className="hidden items-center gap-1 md:flex" aria-label="Main navigation">
+          <ul className="flex items-center gap-1">
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.href;
+              return (
+                <li key={link.href}>
+                  <button
+                    onClick={() => handleNav(link.href)}
+                    className={`group relative flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] rounded-sm ${
+                      isActive
+                        ? "text-[var(--text-primary)] font-semibold"
+                        : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                    }`}
+                  >
+                    <span
+                      className={`font-mono text-[10px] transition-colors ${
+                        isActive
+                          ? "text-[var(--text-primary)] font-bold"
+                          : "text-[var(--text-muted)] group-hover:text-[var(--text-secondary)]"
+                      }`}
+                    >
+                      {link.number}
+                    </span>
+                    <span>{link.label}</span>
+                    {isActive && (
+                      <motion.span
+                        layoutId="nav-active-pill"
+                        className="absolute bottom-0 left-3 right-3 h-[2px] bg-[var(--accent)]"
+                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      />
+                    )}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
 
-        {/* Actions */}
+        {/* Right Controls: Theme Toggle & Mobile Trigger */}
         <div className="flex items-center gap-2">
-          {mounted && (
+          {mounted ? (
             <button
               onClick={toggleTheme}
-              aria-label="Toggle theme"
-              className="rounded-xl p-2.5 text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+              aria-label={
+                resolvedTheme === "dark"
+                  ? "Switch to light theme"
+                  : "Switch to dark theme"
+              }
+              className="flex h-9 w-9 items-center justify-center rounded-md border border-[var(--border-color)] bg-[var(--bg-surface)] text-[var(--text-primary)] transition-colors hover:bg-[var(--hover-state)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
             >
               {resolvedTheme === "dark" ? (
-                <FiSun className="h-5 w-5" />
+                <FiSun className="h-4 w-4 text-[var(--accent)]" />
               ) : (
-                <FiMoon className="h-5 w-5" />
+                <FiMoon className="h-4 w-4 text-[var(--text-secondary)]" />
               )}
             </button>
+          ) : (
+            <div className="h-9 w-9" />
           )}
 
+          {/* Mobile menu trigger */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
-            className="rounded-xl p-2.5 text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 md:hidden"
+            aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={mobileOpen}
+            className="flex h-9 w-9 items-center justify-center rounded-md border border-[var(--border-color)] bg-[var(--bg-surface)] text-[var(--text-primary)] transition-colors hover:bg-[var(--hover-state)] md:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
           >
             {mobileOpen ? (
-              <FiX className="h-5 w-5" />
+              <FiX className="h-4 w-4" />
             ) : (
-              <FiMenu className="h-5 w-5" />
+              <FiMenu className="h-4 w-4" />
             )}
           </button>
         </div>
-      </nav>
+      </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Drawer */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="overflow-hidden border-t border-gray-200/50 bg-white/95 backdrop-blur-xl dark:border-gray-800/50 dark:bg-gray-950/95 md:hidden"
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden border-b border-[var(--border-color)] bg-[var(--bg-primary)] px-6 py-5 md:hidden"
           >
-            <ul className="flex flex-col gap-1 px-6 py-4">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <button
-                    onClick={() => handleNav(link.href)}
-                    className={`block w-full rounded-lg px-4 py-3 text-left text-sm font-medium transition-colors ${
-                      activeSection === link.href
-                        ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400"
-                        : "text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-900"
-                    }`}
-                  >
-                    {link.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <nav aria-label="Mobile navigation">
+              <ul className="flex flex-col space-y-1">
+                {navLinks.map((link) => {
+                  const isActive = activeSection === link.href;
+                  return (
+                    <li key={link.href}>
+                      <button
+                        onClick={() => handleNav(link.href)}
+                        className={`flex w-full items-center justify-between border-b border-[var(--border-color)]/60 py-3 text-left text-sm font-medium transition-colors ${
+                          isActive
+                            ? "text-[var(--text-primary)] font-semibold"
+                            : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                        }`}
+                      >
+                        <span className="flex items-center gap-3">
+                          <span className="font-mono text-xs text-[var(--text-muted)]">
+                            {link.number}
+                          </span>
+                          <span>{link.label}</span>
+                        </span>
+                        {isActive && (
+                          <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
+                        )}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+            <div className="mt-4 pt-2 text-right">
+              <span className="font-mono text-[10px] tracking-wider uppercase text-[var(--text-muted)]">
+                {siteConfig.role}
+              </span>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.header>
+    </header>
   );
 }

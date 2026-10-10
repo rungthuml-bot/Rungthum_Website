@@ -1,210 +1,215 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { contactData, socialLinks } from "@/data/portfolio";
-import { FiSend, FiMessageCircle, FiCheck } from "react-icons/fi";
+import { FiMail, FiCopy, FiCheck, FiArrowUpRight, FiSend } from "react-icons/fi";
 
 export default function Contact() {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.15 });
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
+  const [copied, setCopied] = useState(false);
+  const [subject, setSubject] = useState("");
+  const [body, setBody] = useState("");
 
-  const [formState, setFormState] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormState((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleCopyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(contactData.email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      // Fallback if clipboard API not permitted
+    }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleDraftEmail = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, you'd send this to an API
-    console.log("Form submitted:", formState);
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setFormState({ name: "", email: "", message: "" });
-    }, 3000);
+    const mailtoUrl = `mailto:${contactData.email}?subject=${encodeURIComponent(
+      subject || "Engineering Opportunity / Inquiry"
+    )}&body=${encodeURIComponent(body || "Hello Rungthum,\n\n")}`;
+    window.location.href = mailtoUrl;
   };
-
-  const inputClasses =
-    "w-full rounded-xl border border-gray-200/80 bg-white/80 px-4 py-3.5 text-sm text-gray-900 placeholder-gray-400 backdrop-blur-sm transition-all focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 dark:border-gray-700/80 dark:bg-gray-900/80 dark:text-white dark:placeholder-gray-500 dark:focus:border-indigo-500 dark:focus:ring-indigo-500/20";
 
   return (
     <section
       id="contact"
       ref={ref}
-      className="relative overflow-hidden px-6 py-24 lg:py-32"
+      aria-labelledby="contact-heading"
+      className="relative px-6 py-20 lg:py-28"
     >
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute bottom-0 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-indigo-500/5 blur-3xl" />
-      </div>
-
-      <div className="relative mx-auto max-w-6xl">
-        {/* Section heading */}
+      <div className="mx-auto max-w-[1240px]">
+        {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className="mb-16 text-center"
+          transition={{ duration: 0.4 }}
+          className="mb-14 flex flex-col justify-between gap-4 border-b border-[var(--border-color)] pb-6 md:flex-row md:items-end"
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-indigo-200/50 bg-indigo-50/80 px-4 py-1.5 text-sm font-medium text-indigo-700 dark:border-indigo-800/50 dark:bg-indigo-950/50 dark:text-indigo-300">
-            <FiMessageCircle className="h-3.5 w-3.5" />
-            Contact
-          </span>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
-            {contactData.heading}
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-gray-600 dark:text-gray-400">
-            {contactData.description}
-          </p>
+          <div>
+            <div className="mb-2 flex items-center gap-2 font-mono text-xs text-[var(--text-muted)]">
+              <span className="text-[var(--text-primary)] font-semibold">05</span>
+              <span>/</span>
+              <span>COMMUNICATION CHANNELS</span>
+            </div>
+            <h2
+              id="contact-heading"
+              className="font-display text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl"
+            >
+              {contactData.heading}
+            </h2>
+          </div>
+          <div className="flex items-center gap-2 font-mono text-xs text-[var(--text-muted)]">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent)] opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--accent)]" />
+            </span>
+            <span className="text-[var(--text-secondary)]">{contactData.availability}</span>
+          </div>
         </motion.div>
 
-        <div className="grid gap-12 lg:grid-cols-2">
-          {/* Form */}
-          <motion.form
-            onSubmit={handleSubmit}
-            initial={{ opacity: 0, x: -30 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="space-y-5 rounded-3xl border border-gray-200/50 bg-white/40 p-8 backdrop-blur-sm dark:border-gray-800/50 dark:bg-gray-900/40"
-          >
-            <div>
-              <label
-                htmlFor="contact-name"
-                className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                Name
-              </label>
-              <input
-                id="contact-name"
-                name="name"
-                type="text"
-                required
-                value={formState.name}
-                onChange={handleChange}
-                placeholder="Your name"
-                className={inputClasses}
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="contact-email"
-                className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                Email
-              </label>
-              <input
-                id="contact-email"
-                name="email"
-                type="email"
-                required
-                value={formState.email}
-                onChange={handleChange}
-                placeholder="you@example.com"
-                className={inputClasses}
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="contact-message"
-                className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                Message
-              </label>
-              <textarea
-                id="contact-message"
-                name="message"
-                required
-                rows={5}
-                value={formState.message}
-                onChange={handleChange}
-                placeholder="Tell me about your project..."
-                className={`${inputClasses} resize-none`}
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={submitted}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-500/30 active:scale-[0.98] disabled:opacity-70"
-            >
-              {submitted ? (
-                <>
-                  <FiCheck className="h-4 w-4" />
-                  Message Sent!
-                </>
-              ) : (
-                <>
-                  <FiSend className="h-4 w-4" />
-                  Send Message
-                </>
-              )}
-            </button>
-          </motion.form>
-
-          {/* Contact Info */}
+        {/* 2-Column Editorial Communication Layout */}
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-14">
+          {/* Left Column: Direct Inquiries & Channels (Span 6) */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex flex-col justify-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.45, delay: 0.1 }}
+            className="lg:col-span-6 flex flex-col justify-between space-y-8"
           >
-            <div className="space-y-8">
-              {/* Email card */}
-              <div className="rounded-2xl border border-gray-200/50 bg-white/60 p-6 backdrop-blur-sm dark:border-gray-800/50 dark:bg-gray-900/60">
-                <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Email me at
-                </h3>
-                <a
-                  href={`mailto:${contactData.email}`}
-                  className="mt-1 text-lg font-semibold text-indigo-600 transition-colors hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
-                >
-                  {contactData.email}
-                </a>
-              </div>
+            <div>
+              <p className="text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg">
+                {contactData.description}
+              </p>
 
-              {/* Social links */}
-              <div className="rounded-2xl border border-gray-200/50 bg-white/60 p-6 backdrop-blur-sm dark:border-gray-800/50 dark:bg-gray-900/60">
-                <h3 className="mb-4 text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Find me on
-                </h3>
-                <div className="flex gap-3">
-                  {socialLinks.map((social) => {
-                    const Icon = social.icon;
-                    return (
-                      <a
-                        key={social.label}
-                        href={social.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={social.label}
-                        className="flex h-12 w-12 items-center justify-center rounded-xl border border-gray-200/50 bg-gray-50/80 text-gray-600 transition-all hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600 dark:border-gray-700/50 dark:bg-gray-800/80 dark:text-gray-400 dark:hover:border-indigo-800 dark:hover:bg-indigo-950/50 dark:hover:text-indigo-400"
-                      >
-                        <Icon className="h-5 w-5" />
-                      </a>
-                    );
-                  })}
+              {/* Primary Direct Email Card */}
+              <div className="mt-8 rounded-lg border border-[var(--border-color)] bg-[var(--bg-surface)] p-6 shadow-editorial">
+                <div className="font-mono text-[11px] uppercase tracking-wider text-[var(--text-muted)]">
+                  Primary Institutional Email
+                </div>
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+                  <a
+                    href={`mailto:${contactData.email}`}
+                    className="font-mono text-sm sm:text-base font-semibold text-[var(--text-primary)] hover:text-[var(--text-secondary)] transition-colors underline decoration-[var(--border-color)] underline-offset-4"
+                  >
+                    {contactData.email}
+                  </a>
+                  <button
+                    onClick={handleCopyEmail}
+                    className="inline-flex items-center gap-1.5 rounded border border-[var(--border-color)] bg-[var(--bg-primary)] px-3 py-1.5 font-mono text-xs text-[var(--text-primary)] transition-colors hover:bg-[var(--hover-state)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+                    aria-label="Copy email address to clipboard"
+                  >
+                    {copied ? (
+                      <>
+                        <FiCheck className="h-3.5 w-3.5 text-[var(--accent)]" />
+                        <span className="font-semibold">Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <FiCopy className="h-3.5 w-3.5 text-[var(--text-muted)]" />
+                        <span>Copy</span>
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
+            </div>
 
-              {/* Availability */}
-              <div className="rounded-2xl border border-emerald-200/50 bg-emerald-50/60 p-6 backdrop-blur-sm dark:border-emerald-800/30 dark:bg-emerald-950/20">
-                <div className="flex items-center gap-3">
-                  <span className="relative flex h-3 w-3">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                    <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-500" />
-                  </span>
-                  <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
-                    Available for new opportunities
-                  </span>
-                </div>
+            {/* Verified External Channels */}
+            <div className="border-t border-[var(--border-color)] pt-6">
+              <div className="font-mono text-xs uppercase tracking-wider text-[var(--text-muted)] mb-4">
+                Verified Repositories & Profiles:
               </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {socialLinks.map((social) => {
+                  const Icon = social.icon;
+                  return (
+                    <a
+                      key={social.label}
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center justify-between rounded border border-[var(--border-color)] bg-[var(--bg-surface)] p-3.5 transition-colors hover:border-[var(--text-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <Icon className="h-4 w-4 text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]" />
+                        <div>
+                          <span className="block font-sans text-xs font-semibold text-[var(--text-primary)]">
+                            {social.label}
+                          </span>
+                          <span className="block font-mono text-[10px] text-[var(--text-muted)]">
+                            {social.handle}
+                          </span>
+                        </div>
+                      </div>
+                      <FiArrowUpRight className="h-3.5 w-3.5 text-[var(--text-muted)] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Right Column: Pre-Populated Direct Dispatcher (Span 6) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.45, delay: 0.2 }}
+            className="lg:col-span-6"
+          >
+            <div className="rounded-lg border border-[var(--border-color)] bg-[var(--bg-surface)] p-6 sm:p-8 shadow-editorial">
+              <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-3 mb-6 font-mono text-xs text-[var(--text-muted)]">
+                <span>COMPOSE DIRECT DISPATCH</span>
+                <span className="text-[var(--text-secondary)]">VIA MAIL CLIENT</span>
+              </div>
+
+              <form onSubmit={handleDraftEmail} className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="contact-subject"
+                    className="block font-mono text-xs uppercase tracking-wider text-[var(--text-muted)] mb-1.5"
+                  >
+                    Subject
+                  </label>
+                  <input
+                    id="contact-subject"
+                    type="text"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    placeholder="e.g. Software Internship / Engineering Project"
+                    className="w-full rounded border border-[var(--border-color)] bg-[var(--bg-primary)] px-3.5 py-2.5 font-sans text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] transition-colors focus:border-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="contact-message"
+                    className="block font-mono text-xs uppercase tracking-wider text-[var(--text-muted)] mb-1.5"
+                  >
+                    Brief Message
+                  </label>
+                  <textarea
+                    id="contact-message"
+                    rows={4}
+                    value={body}
+                    onChange={(e) => setBody(e.target.value)}
+                    placeholder="Write a message to launch directly into your email client..."
+                    className="w-full resize-none rounded border border-[var(--border-color)] bg-[var(--bg-primary)] px-3.5 py-2.5 font-sans text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] transition-colors focus:border-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
+                  />
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    className="group inline-flex w-full items-center justify-center gap-2 rounded-md bg-[var(--accent)] px-5 py-3 text-xs font-bold uppercase tracking-wide text-[var(--accent-fg)] transition-all hover:brightness-105 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+                  >
+                    <FiSend className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                    <span>Open in Email Client ({contactData.email})</span>
+                  </button>
+                  <p className="mt-2 text-center font-mono text-[11px] text-[var(--text-muted)]">
+                    Direct dispatch. No credentials stored, no deceptive console logs.
+                  </p>
+                </div>
+              </form>
             </div>
           </motion.div>
         </div>

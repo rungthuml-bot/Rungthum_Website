@@ -2,120 +2,190 @@
 
 import { motion } from "framer-motion";
 import { heroData } from "@/data/portfolio";
-import { FiArrowRight, FiMail } from "react-icons/fi";
+import { FiArrowDown, FiArrowRight, FiTerminal, FiCheckCircle } from "react-icons/fi";
 
 export default function Hero() {
   const scrollTo = (href: string) => {
-    const el = document.querySelector(href);
+    const targetId = href.replace("#", "");
+    const el = document.getElementById(targetId);
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <section
       id="hero"
-      className="relative flex min-h-screen items-center justify-center overflow-hidden px-6"
+      aria-labelledby="hero-heading"
+      className="relative flex min-h-[92vh] flex-col justify-between pt-28 pb-16 lg:pt-36 lg:pb-20 border-b border-[var(--border-color)]"
     >
-      {/* Animated background decorations */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-40 -top-40 h-[500px] w-[500px] rounded-full bg-indigo-500/10 blur-3xl dark:bg-indigo-500/5" />
-        <div className="absolute -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-purple-500/10 blur-3xl dark:bg-purple-500/5" />
-        <div className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-400/5 blur-3xl" />
+      <div className="mx-auto w-full max-w-[1240px] px-6 lg:px-10">
+        {/* Top Status & Context Strip */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-[var(--border-color)] pb-4 font-mono text-xs text-[var(--text-muted)]"
+        >
+          <div className="flex items-center gap-2.5">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent)] opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--accent)]" />
+            </span>
+            <span className="tracking-wide uppercase text-[var(--text-secondary)]">
+              {heroData.status}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <span className="tracking-wider">{heroData.label}</span>
+            <span className="text-[var(--border-color)]">•</span>
+            <span>KHON KAEN (UTC+7)</span>
+          </div>
+        </motion.div>
+
+        {/* Main Editorial Grid: 7:5 Proportional Composition */}
+        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-14">
+          {/* Left Column (Span 7): Typography & Core Narrative */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="lg:col-span-7 flex flex-col"
+          >
+            <div className="mb-4 inline-flex items-center gap-2">
+              <span className="font-mono text-xs uppercase tracking-widest text-[var(--text-secondary)]">
+                {heroData.greeting}
+              </span>
+              <span className="h-px w-8 bg-[var(--border-color)]" />
+              <span className="font-mono text-xs font-semibold text-[var(--text-primary)]">
+                {heroData.name}
+              </span>
+            </div>
+
+            <h1
+              id="hero-heading"
+              className="font-display text-[42px] leading-[1.08] font-extrabold tracking-tight text-[var(--text-primary)] sm:text-[58px] lg:text-[72px]"
+            >
+              Architecting <br className="hidden sm:inline" />
+              reliable software <br className="hidden sm:inline" />
+              with{" "}
+              <span className="underline decoration-[var(--accent)] decoration-4 underline-offset-8">
+                clarity
+              </span>
+              .
+            </h1>
+
+            <p className="mt-8 max-w-xl text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg">
+              {heroData.summary}
+            </p>
+
+            {/* Actions */}
+            <div className="mt-10 flex flex-wrap items-center gap-4">
+              <button
+                onClick={() => scrollTo(heroData.cta.primary.href)}
+                className="group inline-flex items-center gap-2.5 rounded-md bg-[var(--accent)] px-6 py-3.5 text-xs font-bold tracking-wide uppercase text-[var(--accent-fg)] transition-all hover:brightness-105 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+              >
+                <span>{heroData.cta.primary.label}</span>
+                <FiArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </button>
+
+              <button
+                onClick={() => scrollTo(heroData.cta.secondary.href)}
+                className="inline-flex items-center gap-2 rounded-md border border-[var(--border-color)] bg-[var(--bg-surface)] px-6 py-3.5 text-xs font-semibold tracking-wide text-[var(--text-primary)] transition-colors hover:bg-[var(--hover-state)] active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+              >
+                <span>{heroData.cta.secondary.label}</span>
+              </button>
+            </div>
+          </motion.div>
+
+          {/* Right Column (Span 5): Architectural System Inspector */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="lg:col-span-5 w-full"
+          >
+            <div className="overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--bg-surface)] shadow-editorial">
+              {/* Terminal header */}
+              <div className="flex items-center justify-between border-b border-[var(--border-color)] bg-[var(--bg-surface-subtle)] px-4 py-2.5">
+                <div className="flex items-center gap-2">
+                  <div className="h-2.5 w-2.5 rounded-full bg-[#E57373]" />
+                  <div className="h-2.5 w-2.5 rounded-full bg-[#FFB74D]" />
+                  <div className="h-2.5 w-2.5 rounded-full bg-[#81C784]" />
+                  <span className="ml-2 font-mono text-[11px] text-[var(--text-muted)]">
+                    engine/contract.ts
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 font-mono text-[10px] text-[var(--text-muted)]">
+                  <FiTerminal className="h-3 w-3" />
+                  <span>TSC: PASS</span>
+                </div>
+              </div>
+
+              {/* Code & Architectural Blueprint display */}
+              <div className="p-5 font-mono text-xs leading-relaxed text-[var(--text-secondary)] space-y-4">
+                <div className="border-b border-[var(--border-color)]/60 pb-3">
+                  <span className="text-[var(--text-muted)]">{"// Systems engineering manifest"}</span>
+                  <p className="mt-1 text-[var(--text-primary)] font-medium">
+                    <span className="text-[#3B82F6] dark:text-[#60A5FA]">const</span> developer = {"{"}
+                    <br />
+                    &nbsp;&nbsp;name: <span className="text-[#059669] dark:text-[#34D399]">&quot;Rungthum&quot;</span>,
+                    <br />
+                    &nbsp;&nbsp;stack: [<span className="text-[#059669] dark:text-[#34D399]">&quot;TypeScript&quot;</span>, <span className="text-[#059669] dark:text-[#34D399]">&quot;Next.js&quot;</span>, <span className="text-[#059669] dark:text-[#34D399]">&quot;Prisma&quot;</span>],
+                    <br />
+                    &nbsp;&nbsp;focus: <span className="text-[#059669] dark:text-[#34D399]">&quot;Resilient Web Architectures&quot;</span>
+                    <br />
+                    {"}"};
+                  </p>
+                </div>
+
+                {/* Subsystem status badges */}
+                <div className="space-y-2 pt-1">
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+                    Verified Competencies
+                  </span>
+                  <div className="grid grid-cols-1 gap-2 pt-1">
+                    {heroData.focusAreas.map((area, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center justify-between rounded border border-[var(--border-color)] bg-[var(--bg-primary)] px-3 py-1.5 text-[11px]"
+                      >
+                        <span className="text-[var(--text-primary)]">{area}</span>
+                        <span className="inline-flex items-center gap-1 text-[10px] text-[var(--text-muted)]">
+                          <FiCheckCircle className="h-3 w-3 text-[var(--accent)]" />
+                          <span>Active</span>
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-2 text-[11px] text-[var(--text-muted)] flex items-center justify-between">
+                  <span>Build Target: ES2024 / Node 20</span>
+                  <span className="font-bold text-[var(--text-primary)]">v14.2 Next.js</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
 
-      {/* Grid pattern overlay */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.015] dark:opacity-[0.03]"
-        style={{
-          backgroundImage: `radial-gradient(circle, currentColor 1px, transparent 1px)`,
-          backgroundSize: "40px 40px",
-        }}
-      />
+      {/* Bottom Editorial Index Strip */}
+      <div className="mx-auto mt-16 w-full max-w-[1240px] px-6 lg:px-10">
+        <div className="flex items-center justify-between border-t border-[var(--border-color)] pt-6 font-mono text-xs text-[var(--text-muted)]">
+          <div className="flex items-center gap-6">
+            <span>INDEX / 01-05</span>
+            <span className="hidden sm:inline">TYPE-SAFE CLIENT & SERVER</span>
+          </div>
 
-      <div className="relative z-10 mx-auto max-w-4xl text-center">
-        {/* Greeting badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          <span className="inline-flex items-center gap-2 rounded-full border border-indigo-200/50 bg-indigo-50/80 px-4 py-1.5 text-sm font-medium text-indigo-700 backdrop-blur-sm dark:border-indigo-800/50 dark:bg-indigo-950/50 dark:text-indigo-300">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-indigo-500" />
-            </span>
-            {heroData.greeting}
-          </span>
-        </motion.div>
-
-        {/* Name */}
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="mt-8 text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-6xl lg:text-7xl"
-        >
-          {heroData.name}
-          <span className="mt-2 block bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 bg-clip-text text-transparent">
-            {heroData.role}
-          </span>
-        </motion.h1>
-
-        {/* Tagline */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.35 }}
-          className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-gray-600 dark:text-gray-400"
-        >
-          {heroData.tagline}
-        </motion.p>
-
-        {/* CTA Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
-        >
           <button
-            onClick={() => scrollTo(heroData.cta.primary.href)}
-            className="group inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-500/30 active:scale-[0.98]"
+            onClick={() => scrollTo("#projects")}
+            className="group flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)] rounded"
+            aria-label="Scroll to selected works"
           >
-            {heroData.cta.primary.label}
-            <FiArrowRight className="transition-transform group-hover:translate-x-1" />
+            <span>DISCOVER WORKS</span>
+            <FiArrowDown className="h-3.5 w-3.5 transition-transform group-hover:translate-y-0.5" />
           </button>
-          <button
-            onClick={() => scrollTo(heroData.cta.secondary.href)}
-            className="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white/80 px-8 py-3.5 text-sm font-semibold text-gray-700 backdrop-blur-sm transition-all hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700 active:scale-[0.98] dark:border-gray-700 dark:bg-gray-900/80 dark:text-gray-300 dark:hover:border-indigo-700 dark:hover:bg-indigo-950/50 dark:hover:text-indigo-300"
-          >
-            <FiMail className="h-4 w-4" />
-            {heroData.cta.secondary.label}
-          </button>
-        </motion.div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
-          className="mt-20"
-        >
-          <button
-            onClick={() => scrollTo("#about")}
-            className="mx-auto flex flex-col items-center gap-2 text-gray-400 transition-colors hover:text-indigo-500"
-          >
-            <span className="text-xs font-medium uppercase tracking-widest">
-              Scroll Down
-            </span>
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-              className="h-6 w-4 rounded-full border-2 border-current p-0.5"
-            >
-              <div className="mx-auto h-1.5 w-0.5 rounded-full bg-current" />
-            </motion.div>
-          </button>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

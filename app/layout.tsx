@@ -1,7 +1,28 @@
 import type { Metadata } from "next";
+import { Manrope, IBM_Plex_Sans_Thai, IBM_Plex_Mono } from "next/font/google";
 import { siteConfig } from "@/data/portfolio";
 import Providers from "@/components/Providers";
 import "./globals.css";
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-manrope",
+  display: "swap",
+});
+
+const ibmPlexSansThai = IBM_Plex_Sans_Thai({
+  weight: ["300", "400", "500", "600", "700"],
+  subsets: ["thai", "latin"],
+  variable: "--font-ibm-thai",
+  display: "swap",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  weight: ["400", "500", "600"],
+  subsets: ["latin"],
+  variable: "--font-ibm-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: siteConfig.title,
@@ -41,8 +62,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="th" suppressHydrationWarning>
-      <body className="min-h-screen bg-white text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100">
+    <html
+      lang="th"
+      suppressHydrationWarning
+      className={`${manrope.variable} ${ibmPlexSansThai.variable} ${ibmPlexMono.variable}`}
+    >
+      <body className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] antialiased transition-colors duration-300">
         <Providers>{children}</Providers>
       </body>
     </html>
